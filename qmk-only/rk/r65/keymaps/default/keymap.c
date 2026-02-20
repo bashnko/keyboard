@@ -20,12 +20,12 @@
 #endif
 
 enum layer_names {
-    _BASE,             // 0
+    _COLEMAK,          // 0
     _SYMBOLS_RIGHT,    // 1
     _SYMBOLS_LEFT,     // 2
     _NUMBERS,          // 3
     _ALT_A,            // 4
-    _ALT_A_FN,         // 5
+    _QWERTY,           // 5
     _ALT_B,            // 6
     _ALT_B_FN,         // 7
     _BOOT              // 8
@@ -33,19 +33,24 @@ enum layer_names {
 
 enum custom_keycodes {
     SWITCH_FN = SAFE_RANGE,
+    TOGGLE_COLEMAK,
+    TOGGLE_QWERTY,
     CAPS_CTRL_SPACE
 };
 
 bool fn_mode = false;
 
 enum combo_events {
-    JK_ESC,
+    NE_ESC,
+    QW_COMBO,
 };
 
-const uint16_t PROGMEM jk_combo[] = {LT(2, KC_J), RCTL_T(KC_K), COMBO_END};
+const uint16_t PROGMEM ne_combo[] = {LT(2, KC_N), RCTL_T(KC_E), COMBO_END};
+const uint16_t PROGMEM qw_combo[] = {KC_Q, KC_W, COMBO_END};
 
 combo_t key_combos[] = {
-    [JK_ESC] = COMBO(jk_combo, KC_ESC),
+    [NE_ESC] = COMBO(ne_combo, KC_ESC),
+    [QW_COMBO] = COMBO(qw_combo, QW_COMBO),
 };
 
 const uint16_t number_to_function[] PROGMEM = {
@@ -53,9 +58,21 @@ const uint16_t number_to_function[] PROGMEM = {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    static bool in_colemak = true;
     if (keycode == SWITCH_FN) {
         if (record->event.pressed) {
             fn_mode = !fn_mode;
+        }
+        return false;
+    }
+
+    if (keycode == QW_COMBO && record->event.pressed) {
+        if (in_colemak) {
+            layer_move(_QWERTY);
+            in_colemak = false;
+        } else {
+            layer_move(_COLEMAK);
+            in_colemak = true;
         }
         return false;
     }
@@ -70,8 +87,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         return false;
     }
-
-
 
     if (fn_mode) {
         if ( ( keycode >= KC_1 && keycode <= KC_0 ) || keycode == KC_MINS || keycode == KC_EQL ) {
@@ -102,18 +117,17 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    // qwerty
-    // [_BASE] = LAYOUT(
-    //     KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_MUTE,
-    //     KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_DEL,
-    //     CAPS_CTRL_SPACE, LT(3, KC_A), LSFT_T(KC_S), LCTL_T(KC_D), LT(1, KC_F), KC_G, KC_H, LT(2, KC_J), RCTL_T(KC_K), RSFT_T(KC_L), KC_SCLN, KC_QUOT, KC_ENT, KC_PGUP,
-    //     KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, KC_UP,   KC_PGDN,
-    //     KC_LCTL, KC_LGUI, KC_LALT, KC_SPC, KC_RALT, MO(1), KC_LEFT, KC_DOWN, KC_RGHT
-    // ),
+    // Colemak-DH
+    [_COLEMAK] = LAYOUT(
+        KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_MUTE,
+        KC_TAB,  KC_Q,    KC_W,    KC_F,    KC_P,    KC_B,    KC_J,    KC_L,    KC_U,    KC_Y,    KC_SCLN,    KC_LBRC, KC_RBRC, KC_BSLS, KC_DEL,
+        CAPS_CTRL_SPACE, LT(3, KC_A), LSFT_T(KC_R), LCTL_T(KC_S), LT(1, KC_T), KC_G, KC_M, LT(2, KC_N), RCTL_T(KC_E), RSFT_T(KC_I), KC_O, KC_QUOT, KC_ENT, KC_PGUP,
+        KC_LSFT, KC_X,    KC_C,    KC_D,    KC_V,    KC_Z,    KC_K,    KC_H,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, KC_UP,   KC_PGDN,
+        KC_LCTL, KC_LGUI, KC_LALT, KC_SPC, KC_RALT, MO(1), KC_LEFT, KC_DOWN, KC_RGHT
+    ),
 
-
-    //colemak-dh
-    [_BASE] = LAYOUT(
+    // QWERTY
+    [_QWERTY] = LAYOUT(
         KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_MUTE,
         KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_DEL,
         CAPS_CTRL_SPACE, LT(3, KC_A), LSFT_T(KC_S), LCTL_T(KC_D), LT(1, KC_F), KC_G, KC_H, LT(2, KC_J), RCTL_T(KC_K), RSFT_T(KC_L), KC_SCLN, KC_QUOT, KC_ENT, KC_PGUP,
@@ -157,13 +171,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LCTL, KC_LGUI, KC_LALT, KC_SPC, KC_RALT, MO(5), KC_LEFT, KC_DOWN, KC_RGHT
     ),
 
-    [_ALT_A_FN] = LAYOUT(
-        KC_GRV, KC_MYCM, KC_HOME, KC_MAIL, KC_CALC, KC_SLCT, KC_MSTP, KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, KC_VOLD, KC_VOLU, _______, _______,
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, MO(8), _______, KC_HOME, KC_SCRL, RGB_MOD, KC_INS,
-        _______, TO(4), TO(6), _______, _______, _______, _______, _______, _______, MO(8), _______, KC_PSCR, _______, KC_PAUSE,
-        _______, _______, _______, _______, _______, NK_TOGG, _______, _______, RGB_HUI, _______, _______, MO(8), RGB_VAI, KC_END,
-        SWITCH_FN, GU_TOGG, _______, EE_CLR, _______, _______, RGB_SPD, RGB_VAD, RGB_SPI
-    ),
 
     [_ALT_B] = LAYOUT(
         KC_ESC, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS, KC_EQL, KC_BSPC, KC_MUTE,
