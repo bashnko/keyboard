@@ -41,15 +41,16 @@ enum custom_keycodes {
 bool fn_mode = false;
 
 enum combo_events {
-    NE_ESC,
+    HA_ESC,
     QW_COMBO,
+    ST_ALT_B,
 };
 
-const uint16_t PROGMEM ne_combo[] = {LT(2, KC_N), RCTL_T(KC_E), COMBO_END};
+const uint16_t PROGMEM ha_combo[] = {LT(2, KC_H), RCTL_T(KC_A), COMBO_END};
 const uint16_t PROGMEM qw_combo[] = {KC_Q, KC_W, COMBO_END};
 
 combo_t key_combos[] = {
-    [NE_ESC] = COMBO(ne_combo, KC_ESC),
+    [HA_ESC] = COMBO(ha_combo, KC_ESC),
     [QW_COMBO] = COMBO(qw_combo, QW_COMBO),
 };
 
@@ -120,9 +121,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Colemak-DH
     [_COLEMAK] = LAYOUT(
         KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_MUTE,
-        KC_TAB,  KC_Q,    KC_W,    KC_F,    KC_P,    KC_B,    KC_J,    KC_L,    KC_U,    KC_Y,    KC_SCLN,    KC_LBRC, KC_RBRC, KC_BSLS, KC_DEL,
-        CAPS_CTRL_SPACE, LT(3, KC_A), LSFT_T(KC_R), LCTL_T(KC_S), LT(1, KC_T), KC_G, KC_M, LT(2, KC_N), RCTL_T(KC_E), RSFT_T(KC_I), KC_O, KC_QUOT, KC_ENT, KC_PGUP,
-        KC_LSFT, KC_X,    KC_C,    KC_D,    KC_V,    KC_Z,    KC_K,    KC_H,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, KC_UP,   KC_PGDN,
+        KC_TAB,  KC_B,    KC_L,    KC_D,    KC_W,    KC_Z,    KC_J,    KC_F,    KC_O,    KC_U,    KC_J,    KC_LBRC, KC_RBRC, KC_BSLS, KC_DEL,
+        CAPS_CTRL_SPACE, LT(3, KC_N), LSFT_T(KC_R), LCTL_T(KC_T), LT(1, KC_S), KC_G, KC_Y, LT(2, KC_H), RCTL_T(KC_A), RSFT_T(KC_E), KC_I, KC_QUOT, KC_ENT, KC_PGUP,
+        KC_LSFT, KC_Q,    KC_X,    KC_M,    KC_C,    KC_V,    KC_K,    KC_P,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, KC_UP,   KC_PGDN,
         KC_LCTL, KC_LGUI, KC_LALT, KC_SPC, KC_RALT, MO(1), KC_LEFT, KC_DOWN, KC_RGHT
     ),
 
@@ -175,7 +176,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_ALT_B] = LAYOUT(
         KC_ESC, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_MINS, KC_EQL, KC_BSPC, KC_MUTE,
         KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, KC_LBRC, KC_RBRC, KC_BSLS, KC_DEL,
-        KC_CAPS, KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_ENT, KC_PGUP,
+        KC_CAPS, KC_A, KC_LEFT, KC_DOWN, KC_UP, KC_RGHT, KC_HOME, KC_END, KC_PGUP, KC_PGDN, KC_SCLN, KC_QUOT, KC_ENT, KC_PGUP,
         KC_LSFT, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_RSFT, KC_UP, KC_PGDN,
         KC_LCTL, KC_LGUI, KC_LALT, KC_SPC, KC_RALT, MO(7), KC_LEFT, KC_DOWN, KC_RGHT
     ),
